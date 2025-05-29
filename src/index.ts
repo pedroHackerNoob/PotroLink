@@ -2,7 +2,7 @@ import express from 'express'
 const app = express()
 
 app.get('/',(req,res)=>{
-    res.send('hola mundo express')
+    res.send('hola mundo Express / TypeScript')
 } )
  const port = process.env.PORT|| 4000
 
