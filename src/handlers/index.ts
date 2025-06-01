@@ -4,19 +4,29 @@ import {hashPassword} from "../utils/auth";
 import slug from "slug";
 
 export const createAccount =  async (req : Request, res : Response) => {
-    const {name,email,password,handle } = req.body;
-    const userExisted = await User.findOne({email});
-    if (name === "" || email === "" || password === ""){
-        res.status(204).send("Please fill all the fields")
+    const {email,password} = req.body;
+    const handle = slug(req.body.handle,"_")
+    const handleExisted = await User.findOne({handle});
+
+    // handle existed
+    if (handleExisted){
+        const error = new Error(" Handle already existed")
+        res.status(409).json({error : error.message})
+        return console.log(error.message)
     }
-    else if (userExisted){
-        const  error = new Error("User already exists");
-        res.status(409 ).json({error : error.message,email})
-    }else if (!userExisted ){
+    const userExisted = await User.findOne({email});
+    // user existed
+    if(userExisted){
+        const error = new Error(" email already existed")
+        res.status(409).json({error : error.message})
+        return console.log(error.message)
+    }
+    else if (!handleExisted && !userExisted){
         const user = new User(req.body);
         user.password = await hashPassword(password)
-        // await user.save();
-        res.status(201).send(`User created successfully:`)
+        user.handle = handle;
+        await user.save();
+        res.status(201).send(`User created successfully:\n`+user)
+        return console.log(`User created successfully:\n`+user)
     }
-    console.log(slug(handle))
 }
