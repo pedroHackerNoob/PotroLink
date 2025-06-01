@@ -36,3 +36,20 @@ export const createAccount =  async (req : Request, res : Response) => {
         return console.log(`User created successfully:\n`+user)
     }
 }
+
+export const login = async (req : Request, res : Response) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()){
+        res.status(400).json({errors : errors.array()})
+        return console.log(errors.array())
+    }
+
+    const {email,password} = req.body;
+    const emailExisted = await User.findOne({email});
+    if (!emailExisted){
+        res.status(404).send("email not found")
+        return console.log("email not found")
+    }
+    res.send("email found!\nlogin success")
+    return console.log("login success log")
+}
