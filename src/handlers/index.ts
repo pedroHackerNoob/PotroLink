@@ -1,7 +1,7 @@
 import User from "../models/User";
 import type {Request,Response} from "express"
 import { validationResult} from "express-validator"
-import {hashPassword} from "../utils/auth";
+import {checkPassword, hashPassword} from "../utils/auth";
 import slug from "slug";
 
 export const createAccount =  async (req : Request, res : Response) => {
@@ -43,13 +43,19 @@ export const login = async (req : Request, res : Response) => {
         res.status(400).json({errors : errors.array()})
         return console.log(errors.array())
     }
-
+    //email
     const {email,password} = req.body;
     const emailExisted = await User.findOne({email});
     if (!emailExisted){
         res.status(404).send("email not found")
         return console.log("email not found")
     }
-    res.send("email found!\nlogin success")
+    //password
+    const isPasswordCorrect=await checkPassword(password, emailExisted.password)
+    if (!isPasswordCorrect){
+        res.status(401).send("password not match\nlogin failed")
+        return console.log("password failed log")
+    }
+    res.send("login success")
     return console.log("login success log")
 }
