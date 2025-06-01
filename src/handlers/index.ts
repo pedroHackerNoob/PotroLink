@@ -35,13 +35,15 @@ export const login = async (req : Request, res : Response) => {
     const {email,password} = req.body;
     const emailExisted = await User.findOne({email});
     if (!emailExisted){
-        res.status(404).send("email not found")
+        const error = new Error(" email not existed")
+        res.status(404).json({error : error.message})
         return console.log("email not found")
     }
     //password
     const isPasswordCorrect=await checkPassword(password, emailExisted.password)
     if (!isPasswordCorrect){
-        res.status(401).send("password not match\nlogin failed")
+        const error = new Error(" password incorrect")
+        res.status(401).json({error : error.message})
         return console.log("password failed log")
     }
     res.send("login success")
