@@ -4,11 +4,9 @@ import {checkPassword, hashPassword} from "../utils/auth";
 import slug from "slug";
 
 export const createAccount =  async (req : Request, res : Response) => {
-
     const {email,password} = req.body;
     const handle = slug(req.body.handle,"_")
     const handleExisted = await User.findOne({handle});
-
     // handle existed
     if (handleExisted){
         const error = new Error(" Handle already existed")
@@ -33,7 +31,6 @@ export const createAccount =  async (req : Request, res : Response) => {
 }
 
 export const login = async (req : Request, res : Response) => {
-
     //email
     const {email,password} = req.body;
     const emailExisted = await User.findOne({email});
