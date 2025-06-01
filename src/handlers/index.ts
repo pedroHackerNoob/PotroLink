@@ -1,9 +1,10 @@
 import User from "../models/User";
-import {Request,Response} from "express"
+import type {Request,Response} from "express"
 import {hashPassword} from "../utils/auth";
+import slug from "slug";
 
 export const createAccount =  async (req : Request, res : Response) => {
-    const {name,email,password } = req.body;
+    const {name,email,password,handle } = req.body;
     const userExisted = await User.findOne({email});
     if (name === "" || email === "" || password === ""){
         res.status(204).send("Please fill all the fields")
@@ -14,7 +15,8 @@ export const createAccount =  async (req : Request, res : Response) => {
     }else if (!userExisted ){
         const user = new User(req.body);
         user.password = await hashPassword(password)
-        await user.save();
-        res.status(201).send("User created successfully:")
+        // await user.save();
+        res.status(201).send(`User created successfully:`)
     }
+    console.log(slug(handle))
 }
