@@ -1,5 +1,5 @@
 import { CorsOptions } from 'cors'
-
+// cors
 export const corsConfig : CorsOptions= {
     origin: function (origin, callback) {
         if (origin ==='http://localhost:5173') {
