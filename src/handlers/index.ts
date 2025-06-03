@@ -26,7 +26,7 @@ export const createAccount =  async (req : Request, res : Response) => {
         user.handle = handle;
         await user.save();
         res.status(201).send(`User created successfully:\n`+user)
-        return console.log(`User created successfully:\n`+user)
+        return console.log(`User created successfully:`)
     }
 }
 
