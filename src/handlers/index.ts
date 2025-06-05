@@ -2,6 +2,8 @@ import User from "../models/User";
 import type {Request,Response} from "express"
 import {checkPassword, hashPassword} from "../utils/auth";
 import slug from "slug";
+import {generateJWT} from "../utils/jwt";
+import user from "../models/User";
 
 export const createAccount =  async (req : Request, res : Response) => {
     const {email,password} = req.body;
@@ -46,6 +48,8 @@ export const login = async (req : Request, res : Response) => {
         res.status(401).json({error : error.message})
         return console.log("password failed log")
     }
+    generateJWT(user)
+
     res.send("login success")
     return console.log("login success log")
 }

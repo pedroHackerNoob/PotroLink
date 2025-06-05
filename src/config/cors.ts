@@ -2,11 +2,17 @@ import { CorsOptions } from 'cors'
 // cors
 export const corsConfig : CorsOptions= {
     origin: function (origin, callback) {
-        if (origin === process.env.FRONTEND_URL) {
+        const whitelist = [process.env.FRONTEND_URL]
+
+        if(process.argv[2] ==='--api') {
+            whitelist.push(undefined)
+            console.log(whitelist)
+        }
+        if (whitelist.includes(origin)) {
             callback(null, true)
-            console.log('allowed')
+            console.log('Connection allowed by CORS')
         }else {
-            callback(new Error('Not allowed by CORS'))
+            callback(new Error('Not connection allowed by CORS'))
             console.log('not allowed')
         }
     }
