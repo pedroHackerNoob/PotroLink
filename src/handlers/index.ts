@@ -48,8 +48,8 @@ export const login = async (req : Request, res : Response) => {
         res.status(401).json({error : error.message})
         return console.log("password failed log")
     }
-    generateJWT(user)
 
-    res.send("login success")
+    const token = generateJWT({id: user._id})
+    res.send("login success\n"+token)
     return console.log("login success log")
 }
