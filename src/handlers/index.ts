@@ -3,7 +3,7 @@ import type {Request,Response} from "express"
 import {checkPassword, hashPassword} from "../utils/auth";
 import slug from "slug";
 import {generateJWT} from "../utils/jwt";
-import user from "../models/User";
+// import user from "../models/User";
 
 export const createAccount =  async (req : Request, res : Response) => {
     const {email,password} = req.body;
@@ -35,14 +35,14 @@ export const createAccount =  async (req : Request, res : Response) => {
 export const login = async (req : Request, res : Response) => {
     //email
     const {email,password} = req.body;
-    const emailExisted = await User.findOne({email});
-    if (!emailExisted){
+    const user = await User.findOne({email});
+    if (!user){
         const error = new Error(" email not existed")
         res.status(404).json({error : error.message})
         return console.log("email not found")
     }
     //password
-    const isPasswordCorrect=await checkPassword(password, emailExisted.password)
+    const isPasswordCorrect=await checkPassword(password, user.password)
     if (!isPasswordCorrect){
         const error = new Error(" password incorrect")
         res.status(401).json({error : error.message})
