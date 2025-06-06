@@ -53,3 +53,14 @@ export const login = async (req : Request, res : Response) => {
     res.send("login success\n"+token)
     return console.log("login success log")
 }
+
+export const getUser = async (req : Request, res : Response) => {
+    const bearer = req.headers.authorization;
+    if(!bearer){
+        const error = new Error("token not found")
+        res.status(401).json({error : error.message})
+        return console.log(error.message)
+    }
+    res.json('token found')
+    return console.log({'succes' :'token found'})
+}
