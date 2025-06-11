@@ -3,6 +3,7 @@ import type {Request,Response} from "express"
 import {checkPassword, hashPassword} from "../utils/auth";
 import slug from "slug";
 import {generateJWT} from "../utils/jwt";
+import jwt from "jsonwebtoken";
 // import user from "../models/User";
 
 export const createAccount =  async (req : Request, res : Response) => {
@@ -61,6 +62,30 @@ export const getUser = async (req : Request, res : Response) => {
         res.status(401).json({error : error.message})
         return console.log(error.message)
     }
-    res.json('token found')
-    return console.log({'succes' :'token found'})
+    const [,token] = bearer.split(" ");
+
+    if(!token){
+        const error = new Error("token not found")
+        res.status(401).json({error : error.message})
+        return console.log(error.message)
+    }
+
+    try {
+        const result = await jwt.verify(token, process.env.JWT_SECRET)
+        if(typeof result === 'object' && result.id){
+            const user = await User.findById(result.id).select('-password')
+            if(!user){
+                const error = new Error("user not found")
+                res.status(404).json({error : error.message})
+                return console.log(error.message)
+            }
+            res.json(user)
+            return console.log(user)
+        }
+    }catch (err) {
+        console.log(err)
+        res.status(500).json({error : err.message})
+    }
+    // res.json('token found\n')
+    // return console.log({'succes' :`token found `})
 }
